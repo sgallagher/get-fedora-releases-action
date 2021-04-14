@@ -1,0 +1,5 @@
+  name: 'Get Fedora Releases'
+  description: 'Determine the stable and in-development releases of Fedora'
+  runs:
+    using: 'docker'
+    image: 'Dockerfile'
