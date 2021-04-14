@@ -6,19 +6,20 @@ import requests
 r = requests.get('https://bodhi.fedoraproject.org/releases?state=current')
 r.raise_for_status()
 
-releases = set()
+stable = set()
 for release in r.json()['releases']:
     if release['id_prefix'] == "FEDORA":
-        releases.add(release['version'])
+        stable.add(release['version'])
 
-print("::set-output name=stable::{}".format(list(releases)))
+print("::set-output name=stable::{}".format(list(stable)))
 
 r = requests.get('https://bodhi.fedoraproject.org/releases?state=pending')
 r.raise_for_status()
 
-releases = set()
+devel = set()
 for release in r.json()['releases']:
     if release['id_prefix'] == "FEDORA" and release['version'] != "eln":
-        releases.add(release['version'])
+        devel.add(release['version'])
 
-print("::set-output name=development::{}".format(list(releases)))
+print("::set-output name=development::{}".format(list(devel)))
+print("::set-output name=active::{}".format(list(devel.union(stable))))
