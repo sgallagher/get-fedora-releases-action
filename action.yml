@@ -1,5 +1,12 @@
   name: 'Get Fedora Releases'
   description: 'Determine the stable and in-development releases of Fedora'
   runs:
-    using: 'docker'
-    image: 'Dockerfile'
+    using: 'composite'
+    steps:
+        - uses: actions/checkout@v2
+
+        - name: Install python-requests
+          run: pip3 install requests
+
+        - name: Get Fedora releases
+          run: get_fedora_releases.py
