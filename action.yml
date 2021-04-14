@@ -1,5 +1,22 @@
-  name: 'Get Fedora Releases'
-  description: 'Determine the stable and in-development releases of Fedora'
-  runs:
-    using: 'docker'
-    image: 'Dockerfile'
+name: 'Get Fedora Releases'
+description: 'Determine the stable and in-development releases of Fedora'
+outputs:
+  stable:
+    description: A list of Fedora release numbers that are currently receiving updates.
+    value: ${{ steps.releases.outputs.stable }}
+  development:
+    description: A list of Fedora release numbers that are currently in-development and may be unstable.
+    value: ${{ steps.releases.outputs.development }}
+  active:
+    description: The combined list of both `stable` and `development` releases.
+    value: ${{ steps.releases.outputs.active }}
+runs:
+  using: 'composite'
+  steps:
+    - name: Install python-requests
+      run: pip3 install requests
+      shell: bash
+    - name: Get Fedora releases
+      id: releases
+      run: ${{ github.action_path}}/get_fedora_releases.py
+      shell: bash
