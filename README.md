@@ -35,7 +35,8 @@ jobs:
         uses: sgallagher/get-fedora-releases-action@v1
     outputs:
       stable: ${{ steps.releases.outputs.stable }}
-      development: ${{ steps.releases.outputs.stable }}
+      development: ${{ steps.releases.outputs.development }}
+      active: ${{ steps.releases.outputs.active }}
 
   unit_tests_fedora_stable:
     name: Unit Tests (Stable Fedora)
@@ -44,11 +45,37 @@ jobs:
     continue-on-error: false
     strategy:
       matrix:
-        arch:
-          - x86_64
         release: ${{ fromJson(needs.get_fedora_releases.outputs.stable) }}
     container:
-      image: quay.io/fedora/fedora:${{ matrix.release }}-${{ matrix.arch }}
+      image: quay.io/fedora/fedora:${{ matrix.release }}-x86_64
+     steps:
+       - name: Run the tests
+         run: echo "running tests"
+
+  unit_tests_fedora_devel:
+    name: Unit Tests (Devel Fedora)
+    needs: get_fedora_releases
+    runs-on: ubuntu-latest
+    continue-on-error: false
+    strategy:
+      matrix:
+        release: ${{ fromJson(needs.get_fedora_releases.outputs.development) }}
+    container:
+      image: quay.io/fedora/fedora:${{ matrix.release }}-x86_64
+     steps:
+       - name: Run the tests
+         run: echo "running tests"
+
+  unit_tests_fedora_all:
+    name: Unit Tests (Active Fedora)
+    needs: get_fedora_releases
+    runs-on: ubuntu-latest
+    continue-on-error: false
+    strategy:
+      matrix:
+        release: ${{ fromJson(needs.get_fedora_releases.outputs.active) }}
+    container:
+      image: quay.io/fedora/fedora:${{ matrix.release }}-x86_64
      steps:
        - name: Run the tests
          run: echo "running tests"
