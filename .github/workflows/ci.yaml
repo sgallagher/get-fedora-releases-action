@@ -22,6 +22,40 @@ jobs:
     continue-on-error: false
     strategy:
       matrix:
+        release: ${{ fromJson(needs.get_fedora_releases.outputs.stable) }}
+    container:
+      image: quay.io/fedora/fedora:${{ matrix.release }}-x86_64
+
+    outputs:
+        meson_version: ${{ steps.scanbuild.outputs.available }}
+
+    steps:
+      - run: cat /etc/os-release
+
+  unit_tests_fedora_development:
+    name: Unit Tests (Devel Fedora)
+    needs: get_fedora_releases
+    runs-on: ubuntu-latest
+    continue-on-error: false
+    strategy:
+      matrix:
+        release: ${{ fromJson(needs.get_fedora_releases.outputs.development) }}
+    container:
+      image: quay.io/fedora/fedora:${{ matrix.release }}-x86_64
+
+    outputs:
+        meson_version: ${{ steps.scanbuild.outputs.available }}
+
+    steps:
+      - run: cat /etc/os-release
+
+  unit_tests_fedora_active:
+    name: Unit Tests (Active Fedora)
+    needs: get_fedora_releases
+    runs-on: ubuntu-latest
+    continue-on-error: false
+    strategy:
+      matrix:
         release: ${{ fromJson(needs.get_fedora_releases.outputs.active) }}
     container:
       image: quay.io/fedora/fedora:${{ matrix.release }}-x86_64
