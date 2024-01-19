@@ -2,21 +2,31 @@
 # -*- coding: utf-8 -*-
 
 import os
-from fedora_distro_aliases import get_distro_aliases
+import requests
 
 output_file = os.getenv("GITHUB_OUTPUT")
 if not output_file:
     raise ValueError("No output file available")
 
-aliases = get_distro_aliases()
-
 with open(output_file, "w") as f:
 
-    stable_versions = sorted([ x.version for x in aliases["fedora-stable"]])
-    print(f"stable={stable_versions}", file=f)
+    r = requests.get("https://bodhi.fedoraproject.org/releases?state=current")
+    r.raise_for_status()
 
-    devel_versions = sorted([ x.version for x in aliases["fedora-development"]])
-    print(f"development={devel_versions}", file=f)
+    stable = set()
+    for release in r.json()["releases"]:
+        if release["id_prefix"] == "FEDORA":
+            stable.add(release["version"])
 
-    all_versions = sorted([ x.version for x in aliases["fedora-all"]])
-    print(f"active={all_versions}", file=f)
+    print("stable={}".format(list(stable)), file=f)
+
+    r = requests.get("https://bodhi.fedoraproject.org/releases?state=pending")
+    r.raise_for_status()
+
+    devel = set()
+    for release in r.json()["releases"]:
+        if release["id_prefix"] == "FEDORA" and release["version"] != "eln":
+            devel.add(release["version"])
+
+    print("development={}".format(list(devel)), file=f)
+    print("active={}".format(list(devel.union(stable))), file=f)
