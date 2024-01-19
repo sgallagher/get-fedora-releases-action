@@ -13,8 +13,11 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - name: Install python-requests
-      run: pip3 install requests
+    - name: Install krb5-config
+      run: sudo apt update && sudo apt install libkrb5-dev
+      shell: bash
+    - name: Install fedora_distro_aliases
+      run: pip3 install fedora_distro_aliases
       shell: bash
     - name: Get Fedora releases
       id: releases

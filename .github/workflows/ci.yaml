@@ -9,7 +9,7 @@ jobs:
     steps:
       - name: Query Fedora
         id: releases
-        uses: sgallagher/get-fedora-releases-action@main
+        uses: sgallagher/get-fedora-releases-action@aliases
     outputs:
       stable: ${{ steps.releases.outputs.stable }}
       development: ${{ steps.releases.outputs.development }}
