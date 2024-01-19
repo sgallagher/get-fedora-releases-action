@@ -13,8 +13,8 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - name: Install python-requests
-      run: pip3 install requests
+    - name: Install fedora_distro_aliases
+      run: pip3 install fedora_distro_aliases
       shell: bash
     - name: Get Fedora releases
       id: releases
