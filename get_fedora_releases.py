@@ -17,7 +17,7 @@ with open(output_file, "w") as f:
         if release["id_prefix"] == "FEDORA":
             stable.add(release["version"])
 
-    print("stable={}".format(list(stable)), file=f)
+    print("stable={}".format(sorted(list(stable))), file=f)
 
     r = requests.get("https://bodhi.fedoraproject.org/releases?state=pending")
     r.raise_for_status()
@@ -33,5 +33,5 @@ with open(output_file, "w") as f:
         if release["id_prefix"] == "FEDORA" and release["version"] != "eln":
             devel.add(release["version"])
 
-    print("development={}".format(list(devel)), file=f)
-    print("active={}".format(list(devel.union(stable))), file=f)
+    print("development={}".format(sorted(list(devel))), file=f)
+    print("active={}".format(sorted(list(devel.union(stable)))), file=f)
