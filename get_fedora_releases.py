@@ -9,7 +9,6 @@ if not output_file:
     raise ValueError("No output file available")
 
 with open(output_file, "w") as f:
-
     r = requests.get("https://bodhi.fedoraproject.org/releases?state=current")
     r.raise_for_status()
 
@@ -24,6 +23,12 @@ with open(output_file, "w") as f:
     r.raise_for_status()
 
     devel = set()
+    for release in r.json()["releases"]:
+        if release["id_prefix"] == "FEDORA" and release["version"] != "eln":
+            devel.add(release["version"])
+
+    r = requests.get("https://bodhi.fedoraproject.org/releases?state=frozen")
+    r.raise_for_status()
     for release in r.json()["releases"]:
         if release["id_prefix"] == "FEDORA" and release["version"] != "eln":
             devel.add(release["version"])
